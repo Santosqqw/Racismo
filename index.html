@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape Game - Descriptografe a Senha</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100dvh; /* Melhor para celulares */
+            margin: 0;
+            text-align: center;
+            padding: 10px;
+        }
+        .container {
+            background: #111;
+            padding: 20px; /* reduzido para responsividade */
+            border: 2px solid #0f0;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #0f0;
+            width: 100%;
+            max-width: 450px;
+        }
+        input {
+            padding: 12px;
+            font-size: 18px;
+            margin: 15px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            background: #0f0;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        button:hover { background: #0c0; }
+        button:disabled { background: #333; cursor: not-allowed; }
+
+        .contador {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #ff0;
+        }
+
+        .mensagem {
+            margin-top: 20px;
+            font-size: 18px;
+            min-height: 50px;
+        }
+
+        .sucesso {
+            color: #00ff00;
+            font-size: 26px;
+            animation: piscar 1s infinite;
+        }
+
+        .erro {
+            color: #f00;
+            animation: shake 0.5s;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+        }
+
+        @keyframes piscar {
+            50% { opacity: 0.3; }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* MOBILE EXTRA PEQUENO */
+        @media (max-width: 350px) {
+            h1 { font-size: 20px; }
+            .mensagem { font-size: 16px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>MARCAS INVISÍVEIS</h1>
+        <p>Você encontrou uma mensagem criptografada. Descriptografe e digite a senha correta para prosseguir.</p>
+        
+        <div class="contador">Tentativas: <span id="numTentativas">0</span></div>
+        
+        <input type="password" id="senha" placeholder="Digite a senha" autocomplete="off">
+
+        <button onclick="verificar()">ENVIAR</button>
+
+        <div class="mensagem" id="resultado"></div>
+        
+        <!-- A imagem aparece dentro do container para não quebrar o layout -->
+        <img id="imagemRacismo" 
+             src="/mnt/data/imagem racismo.png"
+             style="display:none;">
+    </div>
+
+    <script>
+        const SENHA_CORRETA = "tiffany";
+        let tentativas = 0;
+
+        function atualizarContador() {
+            document.getElementById("numTentativas").textContent = tentativas;
+        }
+
+        function verificar() {
+            const campo = document.getElementById("senha");
+            const resultado = document.getElementById("resultado");
+            const tentativa = campo.value.trim();
+
+            if (tentativa === "") {
+                resultado.innerHTML = "Digite alguma coisa!";
+                resultado.className = "mensagem";
+                return;
+            }
+
+            tentativas++;
+            atualizarContador();
+            campo.value = "";
+            campo.focus();
+
+            if (tentativa === SENHA_CORRETA) {
+                resultado.innerHTML =
+                    `<div class="sucesso">🔓 ACESSO LIBERADO!<br><br>Parabéns! Você acertou na <strong>${tentativas}ª tentativa!</strong></div>`;
+                
+                campo.disabled = true;
+                document.querySelector("button").disabled = true;
+                 window.open("racismo.html", "_blank");
+            } else {
+                resultado.innerHTML =
+                    `<div class="erro">🔒 Senha incorreta!<br><strong>Tentativa ${tentativas} falhou.</strong><br>Tente novamente.</div>`;
+            }
+        }
+
+        document.getElementById("senha").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") verificar();
+        });
+
+        atualizarContador();
+    </script>
+
+</body>
+</html>
